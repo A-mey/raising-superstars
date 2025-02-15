@@ -1,0 +1,30 @@
+{
+  "name": "template",
+  "version": "1.0.0",
+  "description": "template for creating new services",
+  "main": "index.js",
+  "scripts": {
+    "test": "node --import tsx --test src/test/index.test.ts",
+    "build": "tsc -p ./",
+    "start-qc": "set DEPLOY_STAGE=qc&& node ./dist/index.js",
+    "watch-qc": "set DEPLOY_STAGE=qc&& tsx watch ./src/index.ts",
+    "start-dev": "export DEPLOY_STAGE=development && node ./dist/index.js",
+    "watch-dev": "export DEPLOY_STAGE=development && tsx watch ./src/index.ts",
+    "start-staging": "export DEPLOY_STAGE=staging && node ./dist/index.js",
+    "watch-staging": "export DEPLOY_STAGE=staging && tsx watch ./src/index.ts",
+    "start-prod": "export DEPLOY_STAGE=production && node ./dist/index.js",
+    "watch-prod": "export DEPLOY_STAGE=production && tsx watch ./src/index.ts"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "dotenv": "^16.4.5",
+    "express": "^4.21.1",
+    "helmet": "^8.0.0",
+    "tsx": "^4.19.1",
+    "typescript": "^5.6.3"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.0"
+  }
+}
