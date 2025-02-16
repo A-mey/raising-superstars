@@ -5,7 +5,6 @@ import sequelize from '../config/sequelize/sequelize.config';
 class UserTaskCompletion extends Model {
   public id!: number;
   public user_id!: number;
-  public program_id!: number;
   public day_number!: number;
   public activity_id!: number;
   public completed!: boolean;
@@ -24,15 +23,6 @@ UserTaskCompletion.init(
       allowNull: false,
       references: {
         model: 'users',
-        key: 'id',
-      },
-      onDelete: 'CASCADE',
-    },
-    program_id: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
-      references: {
-        model: 'programs',
         key: 'id',
       },
       onDelete: 'CASCADE',

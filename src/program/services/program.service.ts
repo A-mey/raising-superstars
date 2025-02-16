@@ -2,6 +2,8 @@ import { constants } from "../../common/constants/constants";
 import { Catch } from "../../common/helper/catch.helper"
 import { ProgramCacheDao } from "../dao/program.cache.dao";
 import { ProgramDbDao } from "../dao/program.db.dao";
+import { ProgramCacheDaoInterface } from "../interfaces/program.cache.dao.interface";
+import { ProgramDbDaoInterface } from "../interfaces/program.db.dao.interface";
 import { currentDay } from "../types/currentDay.type";
 import { Day } from "../types/day.type";
 import { ProgramResponse } from "../types/programResponse.type";
@@ -9,9 +11,9 @@ import { Program } from "../types/programs.type";
 
 export class ProgramService {
     private programDbDao: ProgramDbDao;
-    programCacheDao: ProgramCacheDao;
+    private programCacheDao: ProgramCacheDao;
     
-    constructor(programDbDao: ProgramDbDao, programCacheDao: ProgramCacheDao) {
+    constructor(programDbDao: ProgramDbDaoInterface, programCacheDao: ProgramCacheDaoInterface) {
         this.programDbDao = programDbDao;
         this.programCacheDao = programCacheDao;
     }
@@ -32,12 +34,14 @@ export class ProgramService {
         }
     }
 
-    private getPrograms = async (day: number, currentDay: number, userId: string): Program [] => {
+    private getPrograms = async (day: number, currentDay: number, userId: string): Promise<Program[]> => {
         try {
             let program: Program [] = [];
             if (currentDay === day) {
                 program = await this.programDbDao.GetProgramsFromDatabase(userId, day);
+                await this.programCacheDao.storeProgramsInCache(userId, day, program);
             } else {
+                // We're assuming that user shouldn't be able to modify data of past days
                 program = await this.programCacheDao.getProgramsFromCache(userId, day);
             }
             return program;
@@ -69,7 +73,7 @@ export class ProgramService {
         }
     }
 
-    private prepareDayResponse = async (userId: string, dayInString?: string): Promise<currentDay> => {
+    prepareDayResponse = async (userId: string, dayInString?: string): Promise<currentDay> => {
         try {
             let day: number;
             let nextDay = false;
@@ -81,11 +85,13 @@ export class ProgramService {
                 day = Number(dayInString);
             }
 
-            if (day !== currentDay) {
-                if (day !== 1) {
-                    prevDay = true
+            if (currentDay !== 1) {
+                prevDay = true;
+                if (day < currentDay) {
+                    nextDay = true
                 }
             }
+
             return {day, currentDay, prevDay, nextDay};
         } catch (error) {
             throw new Error(Catch(error));
@@ -95,6 +101,49 @@ export class ProgramService {
     private getDay = async (userId: string) => {
         try {
             return await this.programDbDao.getCurrentDay(userId);
+        } catch (error) {
+            throw new Error(Catch(error));
+        }
+    }
+
+    updateProgramAsCompleted = async (userId: string, programId: number, day: number) => {
+        try {
+            await this.programDbDao.addToUserTaskCompletion(userId, programId, day)
+        } catch (error) {
+            throw new Error(Catch(error));
+        }
+    }
+
+    verifyProgramAndGetCurrentDay = async (userId: string, programId: number) => {
+        try {
+            const dayOfProgram = await this.verifyWhetherProgramIsOnTheSameDate(userId, programId);
+            const doesProgramAlreadyExistAsCompleted = await this.doesActivityAlreadyExistAsCompleted(userId, programId, dayOfProgram);
+            if (doesProgramAlreadyExistAsCompleted) {
+                throw new Error("403, cannot modify");
+            }
+            return dayOfProgram;
+        } catch (error) {
+            throw new Error(Catch(error));
+        }
+    }
+
+    private verifyWhetherProgramIsOnTheSameDate = async (userId: string, programId: number) => {
+        try {
+            const dayOfProgram = await this.programDbDao.getProgramDay(programId);
+            const dayOfUser = await this.getDay(userId);
+            if (dayOfProgram !== dayOfUser) {
+                throw new Error("401, Not allowed to modify")
+            }
+            return dayOfProgram;
+        } catch (error) {
+            throw new Error(Catch(error));
+        }
+    }
+
+    private doesActivityAlreadyExistAsCompleted = async (userId: string, programId: number, dayOfProgram: number) => {
+        try {
+            const existingRecord = await this.programDbDao.getExistingUserTaskCompletionRecord(userId, programId, dayOfProgram);
+            return existingRecord;
         } catch (error) {
             throw new Error(Catch(error));
         }

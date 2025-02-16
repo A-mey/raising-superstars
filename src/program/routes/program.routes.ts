@@ -2,15 +2,18 @@ import express, { Router } from "express";
 import { ProgramController } from "../controllers/program.controller";
 import { RoutesInterface } from "../../common/interfaces/routes.interface";
 import { AuthenticationMiddleware } from "../../authentication/middleware/authentication.middleware";
+import { ProgramMiddleware } from "../middleware/program.middleware";
 
 export class ProgramRoute implements RoutesInterface {
     private name = "ProgramRoute";
-    programController: ProgramController;
+    private programController: ProgramController;
     router: Router;
-    authenticationMiddleware: AuthenticationMiddleware;
+    private authenticationMiddleware: AuthenticationMiddleware;
+    private programMiddleware: ProgramMiddleware;
 
-    constructor (authenticationMiddleware: AuthenticationMiddleware, programController : ProgramController) {
+    constructor (authenticationMiddleware: AuthenticationMiddleware, programMiddleware: ProgramMiddleware, programController : ProgramController) {
         this.authenticationMiddleware = authenticationMiddleware;
+        this.programMiddleware = programMiddleware;
         this.programController = programController;
         this.router = express.Router();
         this.configureRoutes();
@@ -26,6 +29,7 @@ export class ProgramRoute implements RoutesInterface {
         this.router.route("/completion")
             .patch(
                 this.authenticationMiddleware.authorizeToken,
+                this.programMiddleware.verifyProgramId,
                 this.programController.updateProgramCompletion
             )
 

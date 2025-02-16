@@ -1,9 +1,10 @@
 import { Redis } from "ioredis";
 import redisMock from "ioredis-mock";
 
-export class RedisService {
+class RedisConfig {
 
-    redis: Redis;
+    private redis: Redis;
+    private static instance: RedisConfig;
 
     constructor () {
         console.log(process.env.NODE_ENV, "env");
@@ -16,6 +17,13 @@ export class RedisService {
         } 
     }
 
+    public static getInstance(): RedisConfig {
+        if (!RedisConfig.instance) {
+            RedisConfig.instance = new RedisConfig();
+        }
+        return RedisConfig.instance;
+    }
+
     createNewHash = async (key: string, set: object) => {
         await this.redis.hset(key, set);
     }
@@ -24,5 +32,9 @@ export class RedisService {
         return await this.redis.hmget(key, ...fields!);
     }
 
-    
+    getAllDataFromHash = async (key: string) => {
+        return await this.redis.hgetall(key);
+    }
 }
+
+export default RedisConfig
