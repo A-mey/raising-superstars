@@ -4,8 +4,8 @@ import { RoutesInterface } from "../../common/interfaces/routes.interface";
 
 export class HealthRoute implements RoutesInterface {
     private name = "ProductRoute";
-    healthController: HealthController;
-    router: Router;
+    private healthController: HealthController;
+    private router: Router;
 
     constructor (healthController : HealthController) {
         this.healthController = healthController;

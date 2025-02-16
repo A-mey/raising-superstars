@@ -3,7 +3,9 @@ import dotenv from "dotenv";
 import helmet from "helmet";
 import Dependency from "./common/dependency/dependency";
 
-const dotenvResult = dotenv.config({ path: `.env.${process.env.DEPLOY_STAGE}` })
+const environment = process.env.DEPLOY_STAGE;
+
+const dotenvResult = environment ? dotenv.config({ path: `.env.${environment} ` }) : dotenv.config({ path: `.env` })
 if (dotenvResult.error) {
     throw dotenvResult.error;
 }
@@ -19,7 +21,7 @@ app.use(helmet());
 app.listen(port, async () => {
     try {
         new Dependency(app).getRoutes();
-        console.log(`app is running on port ${port}`);
+        console.log(`app is running on port ${port} on environment ${environment || "none"}`);
     } catch (error) {
         process.exit(1);
     }

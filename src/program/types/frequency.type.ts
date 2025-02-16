@@ -1,0 +1,1 @@
+export type frequency = "Maximize" | "2x/day" | "1x/day" | "2 sounds/day" | "3x/week" | "2x/week";
