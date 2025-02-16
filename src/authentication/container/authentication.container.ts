@@ -1,13 +1,13 @@
-import { MiddlewareContainerInterface } from "../../common/interfaces/middleware.container";
+import { MiddlewareContainerInterface } from "../../common/interfaces/middleware.container.interface";
 import { AuthenticationMiddleware } from "../middleware/authentication.middleware";
 import { AuthenticationService } from "../services/authentication.service";
 import { AuthenticationDbDao } from "../dao/authentication.db.dao";
 
-export class AuthenticationContainer implements MiddlewareContainerInterface {
+export class AuthenticationContainer implements MiddlewareContainerInterface<AuthenticationMiddleware> {
 
-    authenticationMiddleware: AuthenticationMiddleware;
-    authenticationService: AuthenticationService
-    authenticationDbDao: AuthenticationDbDao;
+    private authenticationMiddleware: AuthenticationMiddleware;
+    private authenticationService: AuthenticationService
+    private authenticationDbDao: AuthenticationDbDao;
 
     constructor () {
         this.authenticationDbDao = new AuthenticationDbDao();
@@ -15,7 +15,7 @@ export class AuthenticationContainer implements MiddlewareContainerInterface {
         this.authenticationMiddleware = new AuthenticationMiddleware(this.authenticationService);
     }
 
-    getMiddleware = ()  => {
+    getMiddleware = (): AuthenticationMiddleware  => {
         return this.authenticationMiddleware;
     }
 }

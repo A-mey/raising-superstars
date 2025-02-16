@@ -5,7 +5,7 @@ import { RoutesInterface } from "../../common/interfaces/routes.interface";
 export class HealthRoute implements RoutesInterface {
     private name = "ProductRoute";
     private healthController: HealthController;
-    private router: Router;
+    router: Router;
 
     constructor (healthController : HealthController) {
         this.healthController = healthController;

@@ -5,8 +5,8 @@ import { ContainerInterface } from "../../common/interfaces/container.interface"
 
 export class HealthContainer implements ContainerInterface {
 
-    healthController: HealthController;
-    healthRoutes: HealthRoute
+    private healthController: HealthController;
+    private healthRoutes: HealthRoute
 
     constructor () {
         this.healthController = new HealthController();

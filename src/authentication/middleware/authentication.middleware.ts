@@ -4,7 +4,7 @@ import { AuthenticationService } from "../services/authentication.service";
 import { responseErrorMessage } from "../../common/helper/response.error.helper";
 
 export class AuthenticationMiddleware {
-    authenticationService: AuthenticationService;
+    private authenticationService: AuthenticationService;
 
     constructor (authenticationService: AuthenticationService) {
         this.authenticationService = authenticationService;
