@@ -12,10 +12,12 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@types/jsonwebtoken": "^9.0.8",
     "dotenv": "^16.4.5",
     "express": "^4.21.1",
     "helmet": "^8.0.0",
     "jest": "^29.7.0",
+    "jsonwebtoken": "^9.0.2",
     "pg": "^8.13.3",
     "sequelize": "^6.37.5",
     "sequelize-mock": "^0.10.2",

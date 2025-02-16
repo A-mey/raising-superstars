@@ -17,7 +17,8 @@ export class ProgramRoute implements RoutesInterface {
         this.router.route("/")
             .get(this.programController.getPrograms);
 
-        // this.router.
+        this.router.route("/completion")
+            .patch(this.programController.updateProgramCompletion)
 
         return this.router;
     }

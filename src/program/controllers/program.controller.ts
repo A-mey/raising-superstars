@@ -3,6 +3,7 @@ import { Catch } from "../../common/helper/catch.helper"
 import { ProgramService } from "../services/program.service";
 import { ProgramResponse } from "../types/programResponse.type";
 import { ResponseHelper } from "../../common/helper/response.helper";
+import { responseErrorMessage } from "../../common/helper/response.error.helper";
 
 export class ProgramController {
     private programService: ProgramService;
@@ -19,9 +20,17 @@ export class ProgramController {
             const response = ResponseHelper(true, "Program data", programsData);
             res.status(200).json(response);
         } catch (error) {
-            const errorMessage = Catch(error);
-            const response = ResponseHelper(false, errorMessage);
-            res.status(500).json(response)
+            const errorMessage = responseErrorMessage(error as string);
+            res.status(errorMessage.status).json(errorMessage.errorMessage);
+        }
+    }
+
+    updateProgramCompletion = async (req: express.Request, res: express.Response) => {
+        try {
+
+        } catch (error) {
+            const errorMessage = responseErrorMessage(error as string);
+            res.status(errorMessage.status).json(errorMessage.errorMessage);
         }
     }
 }
