@@ -12,7 +12,7 @@ export class ProgramDbDao implements ProgramDbDaoInterface {
 
     }
 
-    GetProgramsFromDatabase = async (userId: string, day: number): Promise<Program []> => {
+    GetProgramsFromDatabase = async (userId: number, day: number): Promise<Program []> => {
         try {
             const programs = await Schedule.findAll({
                 where: { day_number: day },
@@ -44,7 +44,7 @@ export class ProgramDbDao implements ProgramDbDaoInterface {
         }
     }
 
-    getCurrentDay = async (userId: string): Promise<number> => {
+    getCurrentDay = async (userId: number): Promise<number> => {
         try {
             const userData = await User.findOne({
                 where: {id: userId},
@@ -82,7 +82,7 @@ export class ProgramDbDao implements ProgramDbDaoInterface {
         }
     }
 
-    getExistingUserTaskCompletionRecord = async (userId: string, activityId: number, day: number): Promise<UserTaskCompletion | null> => {
+    getExistingUserTaskCompletionRecord = async (userId: number, activityId: number, day: number): Promise<UserTaskCompletion | null> => {
         try {
             const existingRecord = await UserTaskCompletion.findOne({
                 where: {
@@ -98,7 +98,7 @@ export class ProgramDbDao implements ProgramDbDaoInterface {
         }
     }
 
-    addToUserTaskCompletion = async (userId: string, activityId: number, dayNumber: number) => {
+    addToUserTaskCompletion = async (userId: number, activityId: number, dayNumber: number) => {
         try {
             await UserTaskCompletion.create({
                 user_id: userId,

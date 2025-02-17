@@ -11,22 +11,22 @@ export class ProgramDbMockDao implements ProgramDbDaoInterface {
             { id: 2, title: "Mock Program 2", frequency: "2 sounds/day", completed: true },
         ];
     }
-    getExistingUserTaskCompletionRecord(userId: string, programId: number, day: number): Promise<UserTaskCompletion | null> {
+    getExistingUserTaskCompletionRecord(userId: number, programId: number, day: number): Promise<UserTaskCompletion | null> {
         throw new Error("Method not implemented.");
     }
-    addToUserTaskCompletion(userId: string, programId: number, day: number): Promise<void> {
+    addToUserTaskCompletion(userId: number, programId: number, day: number): Promise<void> {
         throw new Error("Method not implemented.");
     }
     getProgramDay(activityId: number): Promise<number> {
         throw new Error("Method not implemented.");
     }
 
-    async GetProgramsFromDatabase(userId: string, day: number): Promise<Program[]> {
+    async GetProgramsFromDatabase(userId: number, day: number): Promise<Program[]> {
         console.log(`Mock: Fetching programs for user ${userId} on day ${day}`);
         return this.mockPrograms;
     }
 
-    async getCurrentDay(userId: string): Promise<number> {
+    async getCurrentDay(userId: number): Promise<number> {
         console.log(`Mock: Fetching current day for user ${userId}`);
         return 5;
     }

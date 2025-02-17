@@ -16,7 +16,7 @@ export class AuthenticationService {
         }
     }
 
-    authenticateToken = async (token: string): Promise<string> => {
+    authenticateToken = async (token: string): Promise<number> => {
         try {
             const userId = this.getUserId(token);
             await this.checkWhetherUserExists(userId);
@@ -28,7 +28,7 @@ export class AuthenticationService {
 
     private getUserId = (token: string) => {
         try {
-            const userIdData = Jwt.getTokenData<{userId: string}>(token);
+            const userIdData = Jwt.getTokenData<{userId: number}>(token);
             if (!userIdData || !userIdData.userId) {
                 throw new Error("401, authentication error");
             }
@@ -38,7 +38,7 @@ export class AuthenticationService {
         }
     }
 
-    private checkWhetherUserExists = async (userId: string): Promise<void> => {
+    private checkWhetherUserExists = async (userId: number): Promise<void> => {
         try {
             const userData = await this.authenticationDbDao.getUserById(userId);
             if (!userData) {
