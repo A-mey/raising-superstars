@@ -32,15 +32,19 @@ describe('Authentication', () => {
     it("should return 400 if no token is provided", async () => {
         await authenticationMiddleware.authorizeToken(req as Request, res as Response, next);
 
-        const statusMock = res.status as unknown as { mock: { calls: any[][] } };
-        const jsonMock = res.json as unknown as { mock: { calls: any[][] } };
-        const nextMock = next as unknown as { mock: { calls: any[][] } };
+        // const statusMock = res.status as unknown as { mock: { calls: any[][] } };
+        const statusMock = res.status as any;
 
-        console.log("statusMock", statusMock.mock.calls);
-        console.log("jsonMock", jsonMock.mock.calls);
-        console.log("jsonMock", nextMock.mock.calls);
+        // const jsonMock = res.json as unknown as { mock: { calls: any[][] } };
+        const jsonMock = res.json as any;
+        // const nextMock = next as unknown as { mock: { calls: any[][] } };
+        const nextMock = next as any;
 
-        assert.strictEqual(statusMock.mock.calls[0][0], 400);
+        // console.log("statusMock", statusMock.mock.calls[0].arguments[0]);
+        // console.log("jsonMock", jsonMock.mock.calls[0].arguments[0]);
+        // console.log("jsonMock", nextMock.mock.calls);
+
+        assert.strictEqual(statusMock.mock.calls[0].arguments[0], 400);
         assert.deepStrictEqual(jsonMock.mock.calls[0][0], ResponseHelper(false, "Token missing")); 
         assert.strictEqual(nextMock.mock.calls.length, 0);
     });
@@ -49,12 +53,15 @@ describe('Authentication', () => {
         req.headers = { authorization: "Bearer invalidToken" };
         await authenticationMiddleware.authorizeToken(req as Request, res as Response, next);
 
-        const statusMock = res.status as unknown as { mock: { calls: any[][] } };
-        const jsonMock = res.json as unknown as { mock: { calls: any[][] } };
-        const nextMock = next as unknown as { mock: { calls: any[][] } };
+        const statusMock = res.status as any;
 
-        assert.strictEqual(statusMock.mock.calls[0][0], 400);
-        assert.deepStrictEqual(jsonMock.mock.calls[0][0], ResponseHelper(false, "Invalid token"));
+        // const jsonMock = res.json as unknown as { mock: { calls: any[][] } };
+        const jsonMock = res.json as any;
+        // const nextMock = next as unknown as { mock: { calls: any[][] } };
+        const nextMock = next as any;
+
+        assert.strictEqual(statusMock.mock.calls[0].arguments[0], 400);
+        assert.deepStrictEqual(jsonMock.mock.calls[0][0], ResponseHelper(false, "Invalid token")); 
         assert.strictEqual(nextMock.mock.calls.length, 0);
     });
 
@@ -62,22 +69,31 @@ describe('Authentication', () => {
         req.headers = { authorization: "Bearer ABCDEF" };
         await authenticationMiddleware.authorizeToken(req as Request, res as Response, next);
 
-        const statusMock = res.status as unknown as { mock: { calls: any[][] } };
-        const jsonMock = res.json as unknown as { mock: { calls: any[][] } };
-        const nextMock = next as unknown as { mock: { calls: any[][] } };
+        const statusMock = res.status as any;
+
+        // const jsonMock = res.json as unknown as { mock: { calls: any[][] } };
+        const jsonMock = res.json as any;
+        // const nextMock = next as unknown as { mock: { calls: any[][] } };
+        const nextMock = next as any;
 
         const errorMessage = responseErrorMessage("404, authentication error");
-        assert.strictEqual(statusMock.mock.calls[0][0], errorMessage.status);
-        assert.deepStrictEqual(jsonMock.mock.calls[0][0], errorMessage.errorMessage);
+
+        assert.strictEqual(statusMock.mock.calls[0].arguments[0], errorMessage.status);
+        assert.deepStrictEqual(jsonMock.mock.calls[0][0], errorMessage.errorMessage); 
         assert.strictEqual(nextMock.mock.calls.length, 0);
+
     });
 
     it("should call next() if token is valid", async () => {
         req.headers = { authorization: "Bearer PQRST" };
         await authenticationMiddleware.authorizeToken(req as Request, res as Response, next);
 
-        const statusMock = res.status as unknown as { mock: { calls: any[][] } };
-        const nextMock = next as unknown as { mock: { calls: any[][] } };
+        const statusMock = res.status as any;
+
+        // const jsonMock = res.json as unknown as { mock: { calls: any[][] } };
+        const jsonMock = res.json as any;
+        // const nextMock = next as unknown as { mock: { calls: any[][] } };
+        const nextMock = next as any;
 
         assert.strictEqual(res.locals!.userId, "456");
         assert.strictEqual(nextMock.mock.calls.length, 1);
