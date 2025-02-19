@@ -27,13 +27,14 @@ export class AuthenticationMockService implements AuthenticationServiceInterface
         }
     }
 
-    getUserId = (token: string) => {
+    getUserId = (token: string): string => {
         try {
-            const userIdData = Jwt.getTokenData<{userId: string}>(token);
-            if (!userIdData || !userIdData.userId) {
-                throw new Error("401, authentication error");
+            if (token === "ABCDEF") {
+                return "123"
+            } else if (token === "PQRST") {
+                return "456"
             }
-            return userIdData.userId;
+            throw new Error("401, authentication error");
         } catch (error) {
             throw new Error(Catch(error));
         }
@@ -41,10 +42,10 @@ export class AuthenticationMockService implements AuthenticationServiceInterface
 
     checkWhetherUserExists = async (userId: string): Promise<void> => {
         try {
-            const userData = await this.authenticationDbDao.getUserById(userId);
-            if (!userData) {
-                throw new Error("404, authentication error");
+            if (userId === "456") {
+                return;
             }
+            throw new Error("404, authentication error");
         } catch (error) {
             throw new Error(Catch(error));
         }

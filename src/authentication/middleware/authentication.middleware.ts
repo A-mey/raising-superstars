@@ -1,12 +1,12 @@
 import express, { NextFunction } from "express";
 import { ResponseHelper } from "../../common/helper/response.helper";
-import { AuthenticationService } from "../services/authentication.service";
 import { responseErrorMessage } from "../../common/helper/response.error.helper";
+import { AuthenticationServiceInterface } from "../interfaces/authentication.service.interface";
 
 export class AuthenticationMiddleware {
-    private authenticationService: AuthenticationService;
+    private authenticationService: AuthenticationServiceInterface;
 
-    constructor (authenticationService: AuthenticationService) {
+    constructor (authenticationService: AuthenticationServiceInterface) {
         this.authenticationService = authenticationService;
     }
     authorizeToken = async (req: express.Request, res: express.Response, next: NextFunction) => {
