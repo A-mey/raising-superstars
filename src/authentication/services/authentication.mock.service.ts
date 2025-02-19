@@ -3,7 +3,7 @@ import { Catch } from "../../common/helper/catch.helper"
 import { AuthenticationDbDao } from "../dao/authentication.db.dao";
 import { AuthenticationServiceInterface } from "../interfaces/authentication.service.interface";
 
-export class AuthenticationService implements AuthenticationServiceInterface {
+export class AuthenticationMockService implements AuthenticationServiceInterface {
     private authenticationDbDao: AuthenticationDbDao;
     constructor (authenticationDbDao: AuthenticationDbDao) {
         this.authenticationDbDao = authenticationDbDao;

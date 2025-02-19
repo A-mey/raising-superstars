@@ -1,5 +1,6 @@
 import jwt from "jsonwebtoken";
 import { Catch } from "../../helper/catch.helper";
+// import { JwtInterface } from "../../interfaces/jwt.interface";
 
 export class Jwt {
     private static secretKey: string = process.env.SECRET_KEY || (() => { process.exit(1); return ""; })();
