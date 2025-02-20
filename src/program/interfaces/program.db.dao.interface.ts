@@ -2,9 +2,9 @@ import UserTaskCompletion from "../../common/models/userTaskCompletion.model";
 import { Program } from "../types/programs.type";
 
 export interface ProgramDbDaoInterface {
-    GetProgramsFromDatabase(userId: string, day: number): Promise<Program[]>;
-    getCurrentDay(userId: string): Promise<number>;
+    GetProgramsFromDatabase(userId: number, day: number): Promise<Program[]>;
+    getCurrentDay(userId: number): Promise<number>;
     getProgramDay (activityId: number): Promise<number>
-    addToUserTaskCompletion(userId: string, programId: number, day: number): Promise<void>;
-    getExistingUserTaskCompletionRecord(userId: string, programId: number, day: number): Promise<UserTaskCompletion | null>
+    addToUserTaskCompletion(userId: number, programId: number, day: number): Promise<void>;
+    getExistingUserTaskCompletionRecord(userId: number, programId: number, day: number): Promise<UserTaskCompletion | null>
 }

@@ -17,7 +17,7 @@ export class AuthenticationMockService implements AuthenticationServiceInterface
         }
     }
 
-    authenticateToken = async (token: string): Promise<string> => {
+    authenticateToken = async (token: string): Promise<number> => {
         try {
             const userId = this.getUserId(token);
             await this.checkWhetherUserExists(userId);
@@ -27,12 +27,12 @@ export class AuthenticationMockService implements AuthenticationServiceInterface
         }
     }
 
-    getUserId = (token: string): string => {
+    getUserId = (token: string): number => {
         try {
             if (token === "ABCDEF") {
-                return "123"
+                return 123
             } else if (token === "PQRST") {
-                return "456"
+                return 456
             }
             throw new Error("401, authentication error");
         } catch (error) {
@@ -40,9 +40,9 @@ export class AuthenticationMockService implements AuthenticationServiceInterface
         }
     }
 
-    checkWhetherUserExists = async (userId: string): Promise<void> => {
+    checkWhetherUserExists = async (userId: number): Promise<void> => {
         try {
-            if (userId === "456") {
+            if (userId === 456) {
                 return;
             }
             throw new Error("404, authentication error");

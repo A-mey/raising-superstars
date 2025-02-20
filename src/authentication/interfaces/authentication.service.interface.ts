@@ -1,6 +1,6 @@
 export interface AuthenticationServiceInterface {
     getToken(bearerToken: string): string;
-    authenticateToken(token: string): Promise<string>;
-    getUserId(token: string): string;
-    checkWhetherUserExists(userId: string): Promise<void>;
+    authenticateToken(token: string): Promise<number>;
+    getUserId(token: string): number;
+    checkWhetherUserExists(userId: number): Promise<void>;
 }

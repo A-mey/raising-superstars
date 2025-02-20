@@ -9,7 +9,7 @@ export class ProgramCacheDao implements ProgramCacheDaoInterface {
         this.redis = RedisConfig.getInstance();
     }
 
-    getProgramsFromCache = async (userId: string, day: number) : Promise<Program[]> => {
+    getProgramsFromCache = async (userId: number, day: number) : Promise<Program[]> => {
         try {
             const data = await this.redis.getDataFromHash(`${userId}_${day}`, ["programs"]);
 
@@ -21,7 +21,7 @@ export class ProgramCacheDao implements ProgramCacheDaoInterface {
         }
     }
 
-    storeProgramsInCache = async (userId: string, day: number, programs: Program[]): Promise<void> => {
+    storeProgramsInCache = async (userId: number, day: number, programs: Program[]): Promise<void> => {
         try {
             const data = { userId: userId, day: day, programs: JSON.stringify(programs) }
             const key = `${userId}_${day}`;

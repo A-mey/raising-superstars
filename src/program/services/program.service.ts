@@ -18,7 +18,7 @@ export class ProgramService {
         this.programCacheDao = programCacheDao;
     }
 
-    getProgramService = async (userId: string, dayInString?: string): Promise<ProgramResponse> => {
+    getProgramService = async (userId: number, dayInString?: string): Promise<ProgramResponse> => {
         try {
             // We are not expecting the frontend to send the days at all time (for example, if the app has a pattern to send the current day schedule, we will entrust the taks to find the current day on the API itself)
             // const day = dayInString? parseInt(dayInString) : await this.getDay(userId);
@@ -34,7 +34,7 @@ export class ProgramService {
         }
     }
 
-    private getPrograms = async (day: number, currentDay: number, userId: string): Promise<Program[]> => {
+    private getPrograms = async (day: number, currentDay: number, userId: number): Promise<Program[]> => {
         try {
             let program: Program [] = [];
             if (currentDay === day) {
@@ -73,7 +73,7 @@ export class ProgramService {
         }
     }
 
-    prepareDayResponse = async (userId: string, dayInString?: string): Promise<currentDay> => {
+    prepareDayResponse = async (userId: number, dayInString?: string): Promise<currentDay> => {
         try {
             let day: number;
             let nextDay = false;
@@ -102,7 +102,7 @@ export class ProgramService {
         }
     }
 
-    private getDay = async (userId: string) => {
+    private getDay = async (userId: number) => {
         try {
             return await this.programDbDao.getCurrentDay(userId);
         } catch (error) {
@@ -110,7 +110,7 @@ export class ProgramService {
         }
     }
 
-    updateProgramAsCompleted = async (userId: string, programId: number, day: number) => {
+    updateProgramAsCompleted = async (userId: number, programId: number, day: number) => {
         try {
             await this.programDbDao.addToUserTaskCompletion(userId, programId, day)
         } catch (error) {
@@ -118,7 +118,7 @@ export class ProgramService {
         }
     }
 
-    verifyProgramAndGetCurrentDay = async (userId: string, programId: number) => {
+    verifyProgramAndGetCurrentDay = async (userId: number, programId: number) => {
         try {
             const dayOfProgram = await this.verifyWhetherProgramIsOnTheSameDate(userId, programId);
             const doesProgramAlreadyExistAsCompleted = await this.doesActivityAlreadyExistAsCompleted(userId, programId, dayOfProgram);
@@ -131,7 +131,7 @@ export class ProgramService {
         }
     }
 
-    private verifyWhetherProgramIsOnTheSameDate = async (userId: string, programId: number) => {
+    private verifyWhetherProgramIsOnTheSameDate = async (userId: number, programId: number) => {
         try {
             const dayOfProgram = await this.programDbDao.getProgramDay(programId);
             const dayOfUser = await this.getDay(userId);
@@ -144,7 +144,7 @@ export class ProgramService {
         }
     }
 
-    private doesActivityAlreadyExistAsCompleted = async (userId: string, programId: number, dayOfProgram: number) => {
+    private doesActivityAlreadyExistAsCompleted = async (userId: number, programId: number, dayOfProgram: number) => {
         try {
             const existingRecord = await this.programDbDao.getExistingUserTaskCompletionRecord(userId, programId, dayOfProgram);
             return existingRecord;

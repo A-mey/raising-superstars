@@ -4,7 +4,7 @@ import User from "../../common/models/users.model";
 export class AuthenticationDbDao {
     constructor () {}
 
-    getUserById = async (userId: string): Promise<User | null> => {
+    getUserById = async (userId: number): Promise<User | null> => {
         try {
             const userData = await User.findOne({
                 where: {id: userId}

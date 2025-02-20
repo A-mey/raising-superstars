@@ -120,7 +120,7 @@ describe('ProgramService', () => {
     })
     
     it('prepareDayResponse should return correct values when a different day is passed', async () => {
-        const result = await programService.prepareDayResponse('1', '3');
+        const result = await programService.prepareDayResponse(1, '3');
         assert.deepStrictEqual(result, {
             day: 3,
             currentDay: 5,
@@ -130,7 +130,7 @@ describe('ProgramService', () => {
     });
 
     it('give nextDay false for final day', async () => {
-        const result = await programService.prepareDayResponse('1', '5');
+        const result = await programService.prepareDayResponse(1, '5');
         assert.deepStrictEqual(result, {
             day: 5,
             currentDay: 5,
@@ -140,7 +140,7 @@ describe('ProgramService', () => {
     });
 
     it('give prevDay false for first day', async () => {
-        const result = await programService.prepareDayResponse('2');
+        const result = await programService.prepareDayResponse(2);
         assert.deepStrictEqual(result, {
             day: 1,
             currentDay: 1,
