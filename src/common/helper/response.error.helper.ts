@@ -10,7 +10,7 @@ export const responseErrorMessage = (errorMessage: unknown) => {
                 if (!Number.isNaN(errorArray[0])) {
                     let statusCode = parseInt(errorArray[0])
                     errorObject.status = statusCode;
-                    errorObject.errorMessage.message = errorArray[1];
+                    errorObject.errorMessage.message = errorArray[1]?.trim();
                 }
             } else {
                 errorObject.errorMessage.message = errorMessage.message;

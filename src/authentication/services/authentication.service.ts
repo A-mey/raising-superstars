@@ -31,7 +31,7 @@ export class AuthenticationService implements AuthenticationServiceInterface {
         try {
             const userIdData = Jwt.getTokenData<{userId: string}>(token);
             if (!userIdData || !userIdData.userId) {
-                throw new Error("401, authentication error");
+                throw new Error("401,authentication error");
             }
             return userIdData.userId;
         } catch (error) {
@@ -43,7 +43,7 @@ export class AuthenticationService implements AuthenticationServiceInterface {
         try {
             const userData = await this.authenticationDbDao.getUserById(userId);
             if (!userData) {
-                throw new Error("404, authentication error");
+                throw new Error("404,authentication error");
             }
         } catch (error) {
             throw new Error(Catch(error));

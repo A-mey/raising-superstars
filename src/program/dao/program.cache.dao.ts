@@ -4,7 +4,7 @@ import RedisConfig from "../../common/config/redis/redis.config"
 import { ProgramCacheDaoInterface } from "../interfaces/program.cache.dao.interface";
 
 export class ProgramCacheDao implements ProgramCacheDaoInterface {
-    private redis: RedisConfig;
+    redis: RedisConfig;
     constructor () {
         this.redis = RedisConfig.getInstance();
     }

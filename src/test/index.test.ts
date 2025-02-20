@@ -1,15 +1,13 @@
 import assert from 'assert';
-import { describe, it, beforeEach, mock } from 'node:test';
+import { describe, it, before, beforeEach, mock } from 'node:test';
 import { ProgramService } from '../program/services/program.service';
-import { ProgramContainer } from '../program/containers/program.container';
-import { AuthenticationService } from '../authentication/services/authentication.service';
 import { Request, Response, NextFunction } from "express";
-import { AuthenticationContainer } from '../authentication/container/authentication.container';
 import { AuthenticationMiddleware } from '../authentication/middleware/authentication.middleware';
 import { AuthenticationMockService } from '../authentication/services/authentication.mock.service';
 import { AuthenticationDbDao } from '../authentication/dao/authentication.db.dao';
 import { ResponseHelper } from '../common/helper/response.helper';
-import { responseErrorMessage } from '../common/helper/response.error.helper';
+import { ProgramDbMockDao } from '../program/dao/program.db.mock.dao';
+import { ProgramCacheMockDao } from '../program/dao/program.cache.mock.dao';
 
 describe('Authentication', () => {
     let req: Partial<Request>;
@@ -40,16 +38,15 @@ describe('Authentication', () => {
         // const nextMock = next as unknown as { mock: { calls: any[][] } };
         const nextMock = next as any;
 
-        // console.log("statusMock", statusMock.mock.calls[0].arguments[0]);
-        // console.log("jsonMock", jsonMock.mock.calls[0].arguments[0]);
-        // console.log("jsonMock", nextMock.mock.calls);
-
-        assert.strictEqual(statusMock.mock.calls[0].arguments[0], 400);
-        assert.deepStrictEqual(jsonMock.mock.calls[0][0], ResponseHelper(false, "Token missing")); 
-        assert.strictEqual(nextMock.mock.calls.length, 0);
+        const status = statusMock.mock.calls[0].arguments[0];
+        const json = jsonMock.mock.calls[0].arguments[0];
+        const nextCall = nextMock.mock.calls.length;
+        assert.strictEqual(status, 400);
+        assert.deepStrictEqual(json, ResponseHelper(false, "Token missing")); 
+        assert.strictEqual(nextCall, 0);
     });
 
-    it("should return 400 if token is invalid", async () => {
+    it("should return 401 if token is invalid", async () => {
         req.headers = { authorization: "Bearer invalidToken" };
         await authenticationMiddleware.authorizeToken(req as Request, res as Response, next);
 
@@ -60,12 +57,16 @@ describe('Authentication', () => {
         // const nextMock = next as unknown as { mock: { calls: any[][] } };
         const nextMock = next as any;
 
-        assert.strictEqual(statusMock.mock.calls[0].arguments[0], 400);
-        assert.deepStrictEqual(jsonMock.mock.calls[0][0], ResponseHelper(false, "Invalid token")); 
-        assert.strictEqual(nextMock.mock.calls.length, 0);
+        const status = statusMock.mock.calls[0].arguments[0];
+        const json = jsonMock.mock.calls[0].arguments[0];
+        const nextCall = nextMock.mock.calls.length;
+
+        assert.strictEqual(status, 401);
+        assert.deepStrictEqual(json, ResponseHelper(false, "authentication error")); 
+        assert.strictEqual(nextCall, 0);
     });
 
-    it("should return 500 if authentication fails", async () => {
+    it("should return 404 if no user exists", async () => {
         req.headers = { authorization: "Bearer ABCDEF" };
         await authenticationMiddleware.authorizeToken(req as Request, res as Response, next);
 
@@ -76,11 +77,16 @@ describe('Authentication', () => {
         // const nextMock = next as unknown as { mock: { calls: any[][] } };
         const nextMock = next as any;
 
-        const errorMessage = responseErrorMessage("404, authentication error");
+        const status = statusMock.mock.calls[0].arguments[0];
+        const json = jsonMock.mock.calls[0].arguments[0];
+        const nextCall = nextMock.mock.calls.length;
 
-        assert.strictEqual(statusMock.mock.calls[0].arguments[0], errorMessage.status);
-        assert.deepStrictEqual(jsonMock.mock.calls[0][0], errorMessage.errorMessage); 
-        assert.strictEqual(nextMock.mock.calls.length, 0);
+        assert.strictEqual(status, 404);
+        assert.deepStrictEqual(json, {
+            success: false,
+            message: "authentication error",
+          }); 
+        assert.strictEqual(nextCall, 0);
 
     });
 
@@ -91,12 +97,55 @@ describe('Authentication', () => {
         const statusMock = res.status as any;
 
         // const jsonMock = res.json as unknown as { mock: { calls: any[][] } };
-        const jsonMock = res.json as any;
+        // const jsonMock = res.json as any;
         // const nextMock = next as unknown as { mock: { calls: any[][] } };
         const nextMock = next as any;
 
+        const statusLength = statusMock.mock.calls.length;
+        const nextCall = nextMock.mock.calls.length;
+
         assert.strictEqual(res.locals!.userId, "456");
-        assert.strictEqual(nextMock.mock.calls.length, 1);
-        assert.strictEqual(statusMock.mock.calls.length, 0);
+        assert.strictEqual(nextCall, 1);
+        assert.strictEqual(statusLength, 0);
     });
 });
+
+describe('ProgramService', () => {
+
+    let programService: ProgramService;
+    programService = new ProgramService(new ProgramDbMockDao, new ProgramCacheMockDao);
+
+    before(() => async () => {
+        // programService = new ProgramService(new ProgramDbMockDao, new ProgramCacheMockDao);
+    })
+    
+    it('prepareDayResponse should return correct values when a different day is passed', async () => {
+        const result = await programService.prepareDayResponse('1', '3');
+        assert.deepStrictEqual(result, {
+            day: 3,
+            currentDay: 5,
+            prevDay: true,
+            nextDay: true
+        });
+    });
+
+    it('give nextDay false for final day', async () => {
+        const result = await programService.prepareDayResponse('1', '5');
+        assert.deepStrictEqual(result, {
+            day: 5,
+            currentDay: 5,
+            prevDay: true,
+            nextDay: false
+        });
+    });
+
+    it('give prevDay false for first day', async () => {
+        const result = await programService.prepareDayResponse('2');
+        assert.deepStrictEqual(result, {
+            day: 1,
+            currentDay: 1,
+            prevDay: false,
+            nextDay: false
+        });
+    })
+})

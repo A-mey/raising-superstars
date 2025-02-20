@@ -22,7 +22,7 @@ export class ProgramContainer implements ContainerInterface {
     private programCacheDaoMock: ProgramCacheMockDao;
     private programDbDaoMock: ProgramDbMockDao;
     private programServiceMock: ProgramService;
-    programMiddleware: ProgramMiddleware;
+    private programMiddleware: ProgramMiddleware;
 
     constructor () {
         this.programDbDao = new ProgramDbDao();

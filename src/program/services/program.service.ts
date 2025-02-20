@@ -85,6 +85,10 @@ export class ProgramService {
                 day = Number(dayInString);
             }
 
+            if (day > currentDay) {
+                throw new Error("500, Cannot fetch data for this day")
+            }
+
             if (currentDay !== 1) {
                 prevDay = true;
                 if (day < currentDay) {
